@@ -1,6 +1,8 @@
 package gr.unipi.aristeridis.repositories;
 
+import gr.unipi.aristeridis.exceptions.OwnerNotFoundException;
 import gr.unipi.aristeridis.model.Owner;
+import gr.unipi.aristeridis.utility.JPAUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import java.util.List;
@@ -89,13 +91,13 @@ public class OwnerRepository {
         return false;
     }
 
-    public List<Owner> findAll() throws ResourceNotFoundException {
+    public List<Owner> findAll() throws OwnerNotFoundException {
         try {
 
             TypedQuery<Owner> query = entityManager.createQuery(
                     "SELECT o FROM Owner o WHERE o.deletedOwner = false", Owner.class);
             return query.getResultList();
-        } catch (ResourceNotFoundException rnfe) {
+        } catch (OwnerNotFoundException rnfe) {
             System.out.println(rnfe.getMessage());
 
         }

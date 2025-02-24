@@ -1,6 +1,9 @@
 package gr.unipi.aristeridis.repositories;
 
+import gr.unipi.aristeridis.exceptions.CustomException;
+import gr.unipi.aristeridis.exceptions.OwnerNotFoundException;
 import gr.unipi.aristeridis.model.Property;
+import gr.unipi.aristeridis.utility.JPAUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import lombok.extern.slf4j.Slf4j;
