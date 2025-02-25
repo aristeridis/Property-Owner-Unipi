@@ -3,12 +3,10 @@ package gr.unipi.aristeridis.services;
 import gr.unipi.aristeridis.model.Owner;
 import gr.unipi.aristeridis.repositories.OwnerRepository;
 import lombok.extern.slf4j.Slf4j;
-
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
 
 @Slf4j
@@ -20,6 +18,7 @@ public class UserService {
     public UserService(OwnerRepository ownerRepository) {
         this.ownerRepository = ownerRepository;
     }
+
     public int readOwnersCsv(String filename) {
         int rowsRead = 0;
         try (Scanner scanner = new Scanner(new File(filename))) {
@@ -46,9 +45,14 @@ public class UserService {
         return rowsRead;
     }
 
-    private Date parseDate(String dateStr) throws ParseException {
-        Date date = DATE_FORMAT.parse(dateStr);
-        return date;
+    public List<Owner> getAllOwners() {
+        OwnerRepository getOwners = new OwnerRepository();
+        return getOwners.findAll();
+    }
+
+    public void deleteById(Long id) {
+        OwnerRepository owner = new OwnerRepository();
+        owner.deleteById(id);
     }
 
     private long parseLong(String value) {
@@ -59,12 +63,5 @@ public class UserService {
             return -1;
         }
     }
+}
 
-    private int parseInt(String value) {
-        try {
-            return Integer.parseInt(value.trim());
-        } catch (NumberFormatException e) {
-            log.warn("Invalid number format for value '{}'", value);
-            return -1;
-        }
-    }}

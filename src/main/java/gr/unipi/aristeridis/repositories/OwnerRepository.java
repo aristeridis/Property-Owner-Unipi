@@ -19,50 +19,6 @@ public class OwnerRepository {
     }
 
 
-    public Optional<Owner> findByOwnerId(Long ownerId) {
-        try {
-            Owner owner = entityManager.find(Owner.class, ownerId);
-            return Optional.ofNullable(owner);
-        } catch (OwnerNotFoundException onfe) {
-            log.debug("Could not find Owner with ID: " + ownerId);
-            entityManager.getTransaction().rollback();
-            System.out.println(onfe.getMessage());
-        }
-        return Optional.empty();
-    }
-
-    public Optional<Owner> findByVatNumber(Long vatNumber) {
-        try {
-            entityManager.getTransaction().begin();
-            TypedQuery<Owner> query = entityManager.createQuery(
-                    "SELECT o FROM Owner o WHERE o.VatNumber = :vatNumber AND o.deleted = false", Owner.class);
-            query.setParameter("vatNumber", vatNumber);
-            Owner owner = query.getSingleResult();
-            entityManager.getTransaction().commit();
-            return Optional.of(owner);
-        } catch (OwnerNotFoundException onfe) {
-            log.debug("Could not find an Owner with this VAT number");
-            entityManager.getTransaction().rollback();
-            System.out.println(onfe.getMessage());
-        }
-        return Optional.empty();
-    }
-
-    public Optional<Owner> findByEmail(String email) {
-        try {
-            entityManager.getTransaction().begin();
-            TypedQuery<Owner> query = entityManager.createQuery(
-                    "SELECT o FROM Owner o WHERE o.Email = :email AND o.deleted = false", Owner.class);
-            query.setParameter("email", email);
-            Owner owner = query.getSingleResult();
-            entityManager.getTransaction().commit();
-            return Optional.of(owner);
-        } catch (Exception e) {
-            e.getMessage();
-        }
-        return Optional.empty();
-    }
-
     public Optional<Owner> save(Owner owner) {
         try {
             entityManager.getTransaction().begin();
