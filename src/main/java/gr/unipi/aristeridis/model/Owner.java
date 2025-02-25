@@ -5,8 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import java.util.List;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -46,15 +45,12 @@ public class Owner {
     @Column(nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "owner")
-    private List<Property> propertyList;
-
     @Column(nullable = false)
     private boolean deletedOwner = false;
 
     @Override
     public String toString() {
-        return "Owner{" + "OwnerId=" + OwnerId + ", VatNumber=" + VatNumber + ", Name=" + Name + ", SurName=" + SurName + ", Address=" + Address + ", PhoneNumber=" + PhoneNumber + ", Email=" + Email + ", Username=" + Username + ", password=" + password + ", propertyList=" + propertyList + ", deletedOwner=" + deletedOwner + '}';
+        return "Owner{" + "OwnerId=" + OwnerId + ", VatNumber=" + VatNumber + ", Name=" + Name + ", SurName=" + SurName + ", Address=" + Address + ", PhoneNumber=" + PhoneNumber + ", Email=" + Email + ", Username=" + Username + ", password=" + password + ", deletedOwner=" + deletedOwner + '}';
     }
 
 }

@@ -1,26 +1,70 @@
 package gr.unipi.aristeridis.services;
 
-
-import gr.unipi.aristeridis.model.Property;
+import gr.unipi.aristeridis.model.Owner;
 import gr.unipi.aristeridis.repositories.OwnerRepository;
-import gr.unipi.aristeridis.repositories.PropertyRepository;
 import lombok.extern.slf4j.Slf4j;
-import java.util.List;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Scanner;
 
 @Slf4j
 public class UserService {
 
-    private final PropertyRepository propertyRepository;
     private final OwnerRepository ownerRepository;
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
 
-
-
-    public UserService(PropertyRepository propertyRepository, OwnerRepository ownerRepository) {
-        this.propertyRepository = propertyRepository;
+    public UserService(OwnerRepository ownerRepository) {
         this.ownerRepository = ownerRepository;
     }
-
-    public List<Property> getPropertiesByOwnerId(Long ownerId) {
-        return propertyRepository.findByOwnerId(ownerId);
+    public int readOwnersCsv(String filename) {
+        int rowsRead = 0;
+        try (Scanner scanner = new Scanner(new File(filename))) {
+            scanner.nextLine();
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] data = line.split(",");
+//                if (data.length < 9) continue;
+                Owner owner = new Owner();
+                owner.setUsername(data[1].trim());
+                owner.setPassword(data[2].trim());
+                owner.setVatNumber(parseLong(data[3]));
+                owner.setName(data[4].trim());
+                owner.setSurName(data[5].trim());
+                owner.setAddress(data[6].trim());
+                owner.setPhoneNumber(data[7].trim());
+                owner.setEmail(data[8].trim());
+                ownerRepository.save(owner);
+                rowsRead++;
+            }
+        } catch (FileNotFoundException e) {
+            log.error("Error reading owners from CSV file '{}'", filename, e);
+        }
+        return rowsRead;
     }
-}
+
+    private Date parseDate(String dateStr) throws ParseException {
+        Date date = DATE_FORMAT.parse(dateStr);
+        return date;
+    }
+
+    private long parseLong(String value) {
+        try {
+            return Long.parseLong(value.trim());
+        } catch (NumberFormatException e) {
+            log.warn("Invalid number format for value '{}'", value);
+            return -1;
+        }
+    }
+
+    private int parseInt(String value) {
+        try {
+            return Integer.parseInt(value.trim());
+        } catch (NumberFormatException e) {
+            log.warn("Invalid number format for value '{}'", value);
+            return -1;
+        }
+    }}
